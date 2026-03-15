@@ -5,6 +5,8 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  schedule:
+    - cron: 00 18 * * *
 
 jobs:
   build:
@@ -20,4 +22,11 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Execute test
-      run: mvn clean test -Dsuite=testng
+      run: mvn clean test -Dsuite=testng -X
+      
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v7.0.0
+      with:
+        name: Logs
+        path: logs/
+    
