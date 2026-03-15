@@ -12,6 +12,10 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    permissions:
+    contents: read
+    checks: write
+    issues: write
 
     steps:
     - uses: actions/checkout@v4
@@ -24,20 +28,16 @@ jobs:
     - name: Execute test
       run: mvn clean test -Dsuite=testng -X
       
-    - name: Upload test results
-      if: always()
+    - name: Upload a Build Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: test-results
-        path: |
-          test-output/reports/
-          target/surefire-reports/
-          logs/
-        
+        name: Logs
+        path: logs/
+
     - name: Publish Test Report
       if: always()
       uses: dorny/test-reporter@v1
       with:
         name: TestNG Results
-        path: target/surefire-reports/*.xm
+        path: target/surefire-reports/junitreports/TEST-*.xml
         reporter: java-junit
